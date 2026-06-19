@@ -2,6 +2,10 @@
 
 Ứng dụng quản lý công việc (Task Manager) được thiết kế theo kiến trúc phân lớp Clean Architecture và quản lý trạng thái bằng Cubit pattern kết hợp với cơ sở dữ liệu cục bộ Hive.
 
+## Demo
+<p align="center">
+  <video src="https://github.com/user-attachments/assets/09372848-f3f3-4df7-8387-847040b220c8" width="400" controls></video>
+</p>
 ---
 
 ## 1. Kiến trúc ứng dụng (Architecture)

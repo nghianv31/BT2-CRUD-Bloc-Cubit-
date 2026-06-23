@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../../domain/entities/task_entity.dart';
+import '../../core/values/AppStrings.dart';
 import '../bloc/task_cubit.dart';
 import '../pages/task_form_page.dart';
 
@@ -25,9 +26,9 @@ class TaskCardWidget extends StatelessWidget {
         context.read<TaskCubit>().deleteTask(task.id);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('"${task.title}" deleted'),
+            content: Text(AppStrings.taskDeleted(task.title)),
             action: SnackBarAction(
-              label: 'Undo',
+              label: AppStrings.undo,
               onPressed: () {
                 context.read<TaskCubit>().addTask(task);
               },
@@ -82,11 +83,11 @@ class TaskCardWidget extends StatelessWidget {
 
   Color _getPriorityColor() {
     switch (task.priority) {
-      case 'High':
+      case AppStrings.priorityHigh:
         return Colors.redAccent;
-      case 'Medium':
+      case AppStrings.priorityMedium:
         return Colors.amber;
-      case 'Low':
+      case AppStrings.priorityLow:
       default:
         return Colors.green;
     }
@@ -238,7 +239,7 @@ class TaskCardWidget extends StatelessWidget {
                 context.read<TaskCubit>().deleteTask(task.id);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('"${task.title}" deleted'),
+                    content: Text(AppStrings.taskDeleted(task.title)),
                   ),
                 );
               },

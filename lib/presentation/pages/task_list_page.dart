@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/task_cubit.dart';
 import '../bloc/task_state.dart';
+import '../../core/values/AppStrings.dart';
 import '../widgets/filter_chip_widget.dart';
 import '../widgets/task_card_widget.dart';
 import 'task_form_page.dart';
@@ -54,7 +55,7 @@ class _TaskListPageState extends State<TaskListPage> {
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
         title: const Text(
-          'Task Space',
+          AppStrings.taskSpace,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -129,7 +130,7 @@ class _TaskListPageState extends State<TaskListPage> {
       child: TextField(
         controller: _searchController,
         decoration: InputDecoration(
-          hintText: 'Search tasks...',
+          hintText: AppStrings.searchHint,
           hintStyle: TextStyle(color: Colors.grey.shade400),
           prefixIcon: const Icon(Icons.search, color: Color(0xFF2575FC)),
           suffixIcon: _searchController.text.isNotEmpty
@@ -152,7 +153,7 @@ class _TaskListPageState extends State<TaskListPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Status',
+          AppStrings.status,
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.bold,
@@ -166,23 +167,23 @@ class _TaskListPageState extends State<TaskListPage> {
             return Row(
               children: [
                 FilterChipWidget(
-                  value: 'All',
+                  value: AppStrings.statusAll,
                   selectedValue: state.statusFilter,
                   onSelected: (val) => context.read<TaskCubit>().setStatusFilter(val),
                 ),
                 const SizedBox(width: 8.0),
                 FilterChipWidget(
-                  value: 'Completed',
+                  value: AppStrings.statusCompleted,
                   selectedValue: state.statusFilter,
                   onSelected: (val) => context.read<TaskCubit>().setStatusFilter(val),
-                  displayName: 'Completed',
+                  displayName: AppStrings.statusCompleted,
                 ),
                 const SizedBox(width: 8.0),
                 FilterChipWidget(
-                  value: 'Uncompleted',
+                  value: AppStrings.statusUncompleted,
                   selectedValue: state.statusFilter,
                   onSelected: (val) => context.read<TaskCubit>().setStatusFilter(val),
-                  displayName: 'Pending',
+                  displayName: AppStrings.statusPending,
                 ),
               ],
             );
@@ -197,7 +198,7 @@ class _TaskListPageState extends State<TaskListPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Priority',
+          AppStrings.priority,
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.bold,
@@ -213,28 +214,28 @@ class _TaskListPageState extends State<TaskListPage> {
               child: Row(
                 children: [
                   FilterChipWidget(
-                    value: 'All',
+                    value: AppStrings.statusAll,
                     selectedValue: state.priorityFilter,
                     onSelected: (val) => context.read<TaskCubit>().setPriorityFilter(val),
                     prefixColor: Colors.grey,
                   ),
                   const SizedBox(width: 8.0),
                   FilterChipWidget(
-                    value: 'High',
+                    value: AppStrings.priorityHigh,
                     selectedValue: state.priorityFilter,
                     onSelected: (val) => context.read<TaskCubit>().setPriorityFilter(val),
                     prefixColor: Colors.redAccent,
                   ),
                   const SizedBox(width: 8.0),
                   FilterChipWidget(
-                    value: 'Medium',
+                    value: AppStrings.priorityMedium,
                     selectedValue: state.priorityFilter,
                     onSelected: (val) => context.read<TaskCubit>().setPriorityFilter(val),
                     prefixColor: Colors.amber,
                   ),
                   const SizedBox(width: 8.0),
                   FilterChipWidget(
-                    value: 'Low',
+                    value: AppStrings.priorityLow,
                     selectedValue: state.priorityFilter,
                     onSelected: (val) => context.read<TaskCubit>().setPriorityFilter(val),
                     prefixColor: Colors.green,
@@ -264,7 +265,7 @@ class _TaskListPageState extends State<TaskListPage> {
         if (state.status == TaskStatus.failure) {
           return SliverFillRemaining(
             child: Center(
-              child: Text('Error loading tasks: ${state.errorMessage}'),
+              child: Text(AppStrings.errorLoadingTasks(state.errorMessage ?? '')),
             ),
           );
         }
@@ -286,7 +287,7 @@ class _TaskListPageState extends State<TaskListPage> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'No tasks found',
+                    AppStrings.noTasksFound,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -295,7 +296,7 @@ class _TaskListPageState extends State<TaskListPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Try creating a task or changing your search filters.',
+                    AppStrings.tryCreatingTask,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 14,
@@ -334,7 +335,7 @@ class _TaskListPageState extends State<TaskListPage> {
           ),
         );
       },
-      label: const Text('Add Task', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      label: const Text(AppStrings.addTask, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       icon: const Icon(Icons.add, color: Colors.white),
       backgroundColor: const Color(0xFF2575FC),
     );

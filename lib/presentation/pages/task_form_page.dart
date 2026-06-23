@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../../domain/entities/task_entity.dart';
+import '../../core/values/AppStrings.dart';
 import '../bloc/task_cubit.dart';
 
 class TaskFormPage extends StatefulWidget {
@@ -27,7 +28,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
     _title = widget.task?.title ?? '';
     _description = widget.task?.description ?? '';
     _dueDate = widget.task?.dueDate ?? DateTime.now().add(const Duration(days: 1));
-    _priority = widget.task?.priority ?? 'Medium';
+    _priority = widget.task?.priority ?? AppStrings.priorityMedium;
     _isCompleted = widget.task?.isCompleted ?? false;
   }
 
@@ -46,7 +47,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
               onSurface: Colors.black87,
             ),
           ),
-          child: child!,
+          child: child ?? const SizedBox.shrink(),
         );
       },
     );
@@ -58,8 +59,8 @@ class _TaskFormPageState extends State<TaskFormPage> {
   }
 
   void _saveTask() {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
+    if (_formKey.currentState?.validate() ?? false) {
+      _formKey.currentState?.save();
       
       final taskId = widget.task?.id ?? DateTime.now().millisecondsSinceEpoch.toString();
       final newTask = TaskEntity(
@@ -117,7 +118,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
 
   PreferredSizeWidget _buildAppBar(bool isEditing) {
     return AppBar(
-      title: Text(isEditing ? 'Edit Task' : 'New Task', style: const TextStyle(fontWeight: FontWeight.bold)),
+      title: Text(isEditing ? AppStrings.editTask : AppStrings.newTask, style: const TextStyle(fontWeight: FontWeight.bold)),
       backgroundColor: Colors.transparent,
       elevation: 0,
       foregroundColor: Colors.black87,
@@ -140,18 +141,18 @@ class _TaskFormPageState extends State<TaskFormPage> {
       child: TextFormField(
         initialValue: _title,
         decoration: const InputDecoration(
-          labelText: 'Title',
-          hintText: 'Enter task title...',
+          labelText: AppStrings.titleLabel,
+          hintText: AppStrings.titleHint,
           border: InputBorder.none,
           prefixIcon: Icon(Icons.title_rounded, color: Color(0xFF2575FC)),
         ),
         validator: (value) {
           if (value == null || value.trim().isEmpty) {
-            return 'Please enter a title';
+            return AppStrings.titleValidation;
           }
           return null;
         },
-        onSaved: (value) => _title = value!.trim(),
+        onSaved: (value) => _title = value?.trim() ?? '',
         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     );
@@ -163,8 +164,8 @@ class _TaskFormPageState extends State<TaskFormPage> {
         initialValue: _description,
         maxLines: 4,
         decoration: const InputDecoration(
-          labelText: 'Description',
-          hintText: 'Describe this task...',
+          labelText: AppStrings.descriptionLabel,
+          hintText: AppStrings.descriptionHint,
           border: InputBorder.none,
           prefixIcon: Icon(Icons.description_outlined, color: Color(0xFF2575FC)),
         ),
@@ -188,7 +189,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Due Date',
+                      AppStrings.dueDate,
                       style: TextStyle(fontSize: 12, color: Colors.black54),
                     ),
                     const SizedBox(height: 4),
@@ -218,17 +219,17 @@ class _TaskFormPageState extends State<TaskFormPage> {
         const Padding(
           padding: EdgeInsets.only(left: 4.0, bottom: 8.0),
           child: Text(
-            'Priority',
+            AppStrings.priority,
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87),
           ),
         ),
         Row(
           children: [
-            Expanded(child: _buildPriorityChip('Low', Colors.green)),
+            Expanded(child: _buildPriorityChip(AppStrings.priorityLow, Colors.green)),
             const SizedBox(width: 8),
-            Expanded(child: _buildPriorityChip('Medium', Colors.amber)),
+            Expanded(child: _buildPriorityChip(AppStrings.priorityMedium, Colors.amber)),
             const SizedBox(width: 8),
-            Expanded(child: _buildPriorityChip('High', Colors.redAccent)),
+            Expanded(child: _buildPriorityChip(AppStrings.priorityHigh, Colors.redAccent)),
           ],
         ),
       ],
@@ -262,7 +263,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
           child: Container(
             alignment: Alignment.center,
             child: Text(
-              isEditing ? 'Save Changes' : 'Create Task',
+              isEditing ? AppStrings.saveChanges : AppStrings.createTask,
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,

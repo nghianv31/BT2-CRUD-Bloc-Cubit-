@@ -89,23 +89,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF3F5F9),
-      appBar: AppBar(
-        title: Text(isEditing ? 'Edit Task' : 'New Task', style: const TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: Colors.black87,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF6A11CB), Color(0xFF2575FC)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
-        titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
+      appBar: _buildAppBar(isEditing),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -114,140 +98,176 @@ class _TaskFormPageState extends State<TaskFormPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Title Field Card
-                _buildCardSection(
-                  child: TextFormField(
-                    initialValue: _title,
-                    decoration: const InputDecoration(
-                      labelText: 'Title',
-                      hintText: 'Enter task title...',
-                      border: InputBorder.none,
-                      prefixIcon: Icon(Icons.title_rounded, color: Color(0xFF2575FC)),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Please enter a title';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) => _title = value!.trim(),
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                ),
+                _buildTitleField(),
                 const SizedBox(height: 16),
-
-                // Description Field Card
-                _buildCardSection(
-                  child: TextFormField(
-                    initialValue: _description,
-                    maxLines: 4,
-                    decoration: const InputDecoration(
-                      labelText: 'Description',
-                      hintText: 'Describe this task...',
-                      border: InputBorder.none,
-                      prefixIcon: Icon(Icons.description_outlined, color: Color(0xFF2575FC)),
-                    ),
-                    onSaved: (value) => _description = value?.trim() ?? '',
-                  ),
-                ),
+                _buildDescriptionField(),
                 const SizedBox(height: 16),
+                _buildDateSelector(context, formattedDate),
+                const SizedBox(height: 16),
+                _buildPrioritySelector(),
+                const SizedBox(height: 40),
+                _buildSaveButton(isEditing),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
-                // Date Selector Card
-                GestureDetector(
-                  onTap: () => _selectDueDate(context),
-                  child: _buildCardSection(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.calendar_today_rounded, color: Color(0xFF2575FC)),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Due Date',
-                                  style: TextStyle(fontSize: 12, color: Colors.black54),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  formattedDate,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.black38),
-                        ],
+  PreferredSizeWidget _buildAppBar(bool isEditing) {
+    return AppBar(
+      title: Text(isEditing ? 'Edit Task' : 'New Task', style: const TextStyle(fontWeight: FontWeight.bold)),
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      foregroundColor: Colors.black87,
+      flexibleSpace: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF6A11CB), Color(0xFF2575FC)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+      ),
+      titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+      iconTheme: const IconThemeData(color: Colors.white),
+    );
+  }
+
+  Widget _buildTitleField() {
+    return _buildCardSection(
+      child: TextFormField(
+        initialValue: _title,
+        decoration: const InputDecoration(
+          labelText: 'Title',
+          hintText: 'Enter task title...',
+          border: InputBorder.none,
+          prefixIcon: Icon(Icons.title_rounded, color: Color(0xFF2575FC)),
+        ),
+        validator: (value) {
+          if (value == null || value.trim().isEmpty) {
+            return 'Please enter a title';
+          }
+          return null;
+        },
+        onSaved: (value) => _title = value!.trim(),
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+      ),
+    );
+  }
+
+  Widget _buildDescriptionField() {
+    return _buildCardSection(
+      child: TextFormField(
+        initialValue: _description,
+        maxLines: 4,
+        decoration: const InputDecoration(
+          labelText: 'Description',
+          hintText: 'Describe this task...',
+          border: InputBorder.none,
+          prefixIcon: Icon(Icons.description_outlined, color: Color(0xFF2575FC)),
+        ),
+        onSaved: (value) => _description = value?.trim() ?? '',
+      ),
+    );
+  }
+
+  Widget _buildDateSelector(BuildContext context, String formattedDate) {
+    return GestureDetector(
+      onTap: () => _selectDueDate(context),
+      child: _buildCardSection(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+          child: Row(
+            children: [
+              const Icon(Icons.calendar_today_rounded, color: Color(0xFF2575FC)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Due Date',
+                      style: TextStyle(fontSize: 12, color: Colors.black54),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      formattedDate,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
                       ),
                     ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Priority Selector Section
-                const Padding(
-                  padding: EdgeInsets.only(left: 4.0, bottom: 8.0),
-                  child: Text(
-                    'Priority',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87),
-                  ),
-                ),
-                Row(
-                  children: [
-                    Expanded(child: _buildPriorityChip('Low', Colors.green)),
-                    const SizedBox(width: 8),
-                    Expanded(child: _buildPriorityChip('Medium', Colors.amber)),
-                    const SizedBox(width: 8),
-                    Expanded(child: _buildPriorityChip('High', Colors.redAccent)),
                   ],
                 ),
-                const SizedBox(height: 40),
+              ),
+              const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.black38),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-                // Save Button
-                SizedBox(
-                  width: double.infinity,
-                  height: 52,
-                  child: ElevatedButton(
-                    onPressed: _saveTask,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      padding: EdgeInsets.zero,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      shadowColor: const Color(0xFF2575FC).withValues(alpha: 0.4),
-                      elevation: 8,
-                    ),
-                    child: Ink(
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF6A11CB), Color(0xFF2575FC)],
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text(
-                          isEditing ? 'Save Changes' : 'Create Task',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+  Widget _buildPrioritySelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(left: 4.0, bottom: 8.0),
+          child: Text(
+            'Priority',
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87),
+          ),
+        ),
+        Row(
+          children: [
+            Expanded(child: _buildPriorityChip('Low', Colors.green)),
+            const SizedBox(width: 8),
+            Expanded(child: _buildPriorityChip('Medium', Colors.amber)),
+            const SizedBox(width: 8),
+            Expanded(child: _buildPriorityChip('High', Colors.redAccent)),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSaveButton(bool isEditing) {
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: ElevatedButton(
+        onPressed: _saveTask,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          padding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          shadowColor: const Color(0xFF2575FC).withValues(alpha: 0.4),
+          elevation: 8,
+        ),
+        child: Ink(
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF6A11CB), Color(0xFF2575FC)],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Container(
+            alignment: Alignment.center,
+            child: Text(
+              isEditing ? 'Save Changes' : 'Create Task',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
           ),
         ),

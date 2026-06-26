@@ -70,6 +70,7 @@ class _TaskFormPageState extends State<TaskFormPage> {
         dueDate: _dueDate,
         isCompleted: _isCompleted,
         priority: _priority,
+        createdAt: widget.task?.createdAt ?? DateTime.now(),
       );
 
       final cubit = context.read<TaskCubit>();
@@ -91,10 +92,11 @@ class _TaskFormPageState extends State<TaskFormPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF3F5F9),
       appBar: _buildAppBar(isEditing),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Form(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,7 +115,8 @@ class _TaskFormPageState extends State<TaskFormPage> {
           ),
         ),
       ),
-    );
+    ),
+  );
   }
 
   PreferredSizeWidget _buildAppBar(bool isEditing) {

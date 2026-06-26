@@ -23,6 +23,9 @@ class TaskModel {
   @HiveField(5)
   final String priority;
 
+  @HiveField(6)
+  final DateTime createdAt;
+
   const TaskModel({
     required this.id,
     required this.title,
@@ -30,6 +33,7 @@ class TaskModel {
     required this.dueDate,
     required this.isCompleted,
     required this.priority,
+    required this.createdAt,
   });
 
   factory TaskModel.fromEntity(TaskEntity entity) {
@@ -40,6 +44,7 @@ class TaskModel {
       dueDate: entity.dueDate,
       isCompleted: entity.isCompleted,
       priority: entity.priority,
+      createdAt: entity.createdAt,
     );
   }
 
@@ -51,6 +56,7 @@ class TaskModel {
       dueDate: dueDate,
       isCompleted: isCompleted,
       priority: priority,
+      createdAt: createdAt,
     );
   }
 }

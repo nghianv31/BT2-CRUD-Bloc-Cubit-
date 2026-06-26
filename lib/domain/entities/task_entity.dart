@@ -7,6 +7,7 @@ class TaskEntity extends Equatable {
   final DateTime dueDate;
   final bool isCompleted;
   final String priority; // 'Low', 'Medium', 'High'
+  final DateTime createdAt;
 
   const TaskEntity({
     required this.id,
@@ -15,6 +16,7 @@ class TaskEntity extends Equatable {
     required this.dueDate,
     required this.isCompleted,
     required this.priority,
+    required this.createdAt,
   });
 
   TaskEntity copyWith({
@@ -24,6 +26,7 @@ class TaskEntity extends Equatable {
     DateTime? dueDate,
     bool? isCompleted,
     String? priority,
+    DateTime? createdAt,
   }) {
     return TaskEntity(
       id: id ?? this.id,
@@ -32,9 +35,10 @@ class TaskEntity extends Equatable {
       dueDate: dueDate ?? this.dueDate,
       isCompleted: isCompleted ?? this.isCompleted,
       priority: priority ?? this.priority,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
   @override
-  List<Object?> get props => [id, title, description, dueDate, isCompleted, priority];
+  List<Object?> get props => [id, title, description, dueDate, isCompleted, priority, createdAt];
 }

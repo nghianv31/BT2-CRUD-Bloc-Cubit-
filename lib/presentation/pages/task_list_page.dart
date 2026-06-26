@@ -36,12 +36,14 @@ class _TaskListPageState extends State<TaskListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF3F5F9),
-      body: CustomScrollView(
-        slivers: [
-          _buildAppBar(),
-          _buildSearchBarAndFilterSection(),
-          _buildTaskListSection(),
-        ],
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            _buildAppBar(),
+            _buildSearchBarAndFilterSection(),
+            _buildTaskListSection(),
+          ],
+        ),
       ),
       floatingActionButton: _buildFloatingActionButton(context),
     );
@@ -49,18 +51,24 @@ class _TaskListPageState extends State<TaskListPage> {
 
   Widget _buildAppBar() {
     return SliverAppBar(
-      expandedHeight: 180.0,
+      expandedHeight: 110.0,
       floating: false,
       pinned: true,
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.sort_rounded, color: Colors.white),
+          onPressed: () => _showSortBottomSheet(context),
+        ),
+      ],
       flexibleSpace: FlexibleSpaceBar(
-        titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
+        titlePadding: const EdgeInsets.only(left: 20, bottom: 14),
         title: const Text(
           AppStrings.taskSpace,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
             letterSpacing: 0.5,
-            fontSize: 24,
+            fontSize: 20,
           ),
         ),
         background: Container(
@@ -77,15 +85,15 @@ class _TaskListPageState extends State<TaskListPage> {
                 right: -30,
                 top: -30,
                 child: CircleAvatar(
-                  radius: 80,
+                  radius: 60,
                   backgroundColor: Colors.white.withValues(alpha: 0.1),
                 ),
               ),
               Positioned(
                 left: -20,
-                bottom: 40,
+                bottom: 20,
                 child: CircleAvatar(
-                  radius: 50,
+                  radius: 35,
                   backgroundColor: Colors.white.withValues(alpha: 0.05),
                 ),
               ),
@@ -338,6 +346,75 @@ class _TaskListPageState extends State<TaskListPage> {
       label: const Text(AppStrings.addTask, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       icon: const Icon(Icons.add, color: Colors.white),
       backgroundColor: const Color(0xFF2575FC),
+    );
+  }
+
+  void _showSortBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return BlocBuilder<TaskCubit, TaskState>(
+          builder: (context, state) {
+            final options = [
+              {'label': 'Date Created (Newest)', 'sortBy': 'CreatedAt', 'ascending': false},
+              {'label': 'Date Created (Oldest)', 'sortBy': 'CreatedAt', 'ascending': true},
+              {'label': 'Priority (High -> Low)', 'sortBy': 'Priority', 'ascending': false},
+              {'label': 'Priority (Low -> High)', 'sortBy': 'Priority', 'ascending': true},
+              {'label': 'Title (A -> Z)', 'sortBy': 'Title', 'ascending': true},
+              {'label': 'Title (Z -> A)', 'sortBy': 'Title', 'ascending': false},
+            ];
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Sort Tasks',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+                  Flexible(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: options.length,
+                      itemBuilder: (context, index) {
+                        final opt = options[index];
+                        final isSelected = state.sortBy == opt['sortBy'] &&
+                            state.sortAscending == opt['ascending'];
+
+                        return ListTile(
+                          title: Text(
+                            opt['label'] as String,
+                            style: TextStyle(
+                              color: isSelected ? const Color(0xFF2575FC) : Colors.black87,
+                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                            ),
+                          ),
+                          trailing: isSelected
+                              ? const Icon(Icons.check_rounded, color: Color(0xFF2575FC))
+                              : null,
+                          onTap: () {
+                            context.read<TaskCubit>().setSortBy(
+                                  opt['sortBy'] as String,
+                                  opt['ascending'] as bool,
+                                );
+                            Navigator.pop(context);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
